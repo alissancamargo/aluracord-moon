@@ -1,44 +1,10 @@
 import { Box, Button, Text, TextField, Image } from '@skynexui/components'
+import React from 'react'
+import { useRouter } from 'next/router'
 import appConfig from './config.json'
 
-function GlobalStyle() {
-  return (
-    <style global jsx>{`
-      * {
-        // background: black;
-        margin: 0;
-        padding: 0;
-        box-sizzing: border-box;
-        list-style: none;
-      }
-
-      body {
-        font-family: 'Open Sans', sans-serif;
-      }
-
-      /*App fit Height */
-      html,
-      body,
-      #_next {
-        min-height: 100vh;
-        display: flex;
-        flex: 1;
-      }
-
-      #_next {
-        flex: 1;
-      }
-
-      #_next > * {
-        flex: 1;
-      }
-      /* ./App fit Height*/
-    `}</style>
-  )
-}
-
-function Titulo(props) {
-  console.log(props)
+export function Titulo(props) {
+  // console.log(props)
   const Tag = props.tag || 'h1'
   return (
     <>
@@ -67,11 +33,14 @@ function Titulo(props) {
 // export default HomePage
 
 export default function PaginaInicial() {
-  const username = 'alissancamargo'
+  const [username, setUsername] = React.useState('alissancamargo')
+  const roteamento = useRouter()
+
+  // const imageDefault =
+  //   'https://www.fiscalti.com.br/wp-content/uploads/2021/02/default-user-image.png'
 
   return (
     <>
-      <GlobalStyle />
       <Box
         styleSheet={{
           display: 'flex',
@@ -108,6 +77,16 @@ export default function PaginaInicial() {
           {/* Formulário */}
           <Box
             as="form"
+            onSubmit={function (infosDoEvento) {
+              infosDoEvento.preventDefault()
+
+              if (username.length <= 2) {
+                return alert('Digite o username correto!')
+              }
+
+              console.log('Alguém submeteu o form')
+              roteamento.push('/chat')
+            }}
             styleSheet={{
               display: 'flex',
               flexDirection: 'column',
@@ -128,8 +107,14 @@ export default function PaginaInicial() {
             >
               {appConfig.name}
             </Text>
-
+            {/* <input type="text" /> */}
             <TextField
+              value={username}
+              onChange={function (event) {
+                console.log('Alguém digitou algo', event.target.value)
+                const valor = event.target.value
+                setUsername(valor)
+              }}
               fullWidth
               textFieldColors={{
                 neutral: {
@@ -175,7 +160,12 @@ export default function PaginaInicial() {
                 borderRadius: '50%',
                 marginBottom: '16px'
               }}
-              src={`https://github.com/${username}.png`}
+              src={
+                // username !== ''
+                // ?
+                `https://github.com/${username}.png`
+                // : imageDefault
+              }
             />
             <Text
               variant="body4"
