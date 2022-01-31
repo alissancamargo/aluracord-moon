@@ -35,6 +35,18 @@
         "800": "#181F25",
         "900": "#101418",
         "999": "#080A0C"
+      },
+
+      "transparente": {
+        "fundo": "rgba(82,102,122, 0.60)"
+      },
+
+      "transparenteArea": {
+        "fundoArea": "rgba(49,61,73, 0.60)"
+      },
+
+      "textMenssage": {
+        "textMenssage": "rgba(208,176,218, 0.60)"
       }
     }
   }

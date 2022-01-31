@@ -13,6 +13,21 @@ function GlobalStyle() {
         font-family: 'Open Sans', sans-serif;
       }
 
+      ::-webkit-scrollbar {
+        width: 5px; /* width of the entire scrollbar */
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #52667a;
+        border-radius: 3px; /* color of the tracking area */
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background-color: #c9a3c4; /* color of the scroll thumb */
+        border-radius: 3px; /* roundness of the scroll thumb */
+        border: 2px solid; /* creates padding around scroll thumb */
+      }
+
       /*App fit Height */
       html,
       body,

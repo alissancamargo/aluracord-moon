@@ -1,18 +1,45 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import appConfig from './config.json'
+import { createClient } from '@supabase/supabase-js'
+import ReactLoading from 'react-loading'
+
+const SUPABASE_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzYzNjk5NiwiZXhwIjoxOTU5MjEyOTk2fQ.MwC-N4B3C6_fzQHPjXxnNmR9mcoN2g7MY_IjX-ZeOHo'
+const SUPABASE_URL = 'https://ubboepldsctyphkmazyy.supabase.co'
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 export default function ChatPage() {
   const [mensagem, setMensagem] = useState('')
   const [listaDeMensagem, setListaDeMensagem] = useState([])
+  const [load, setLoad] = useState(false)
+
+  useEffect(() => {
+    supabaseClient
+      .from('mensagens')
+      .select('*')
+      .order('id', { ascending: false })
+      .then(({ data }) => {
+        console.log('Dados da consulta', data)
+        setListaDeMensagem(data)
+      })
+  }, [])
 
   function handleNovaMensagem(NovaMensagem) {
+    setLoad(true)
     const mensagem = {
-      id: listaDeMensagem.length,
+      // id: listaDeMensagem.length,
       de: 'alissancamargo',
       texto: NovaMensagem
     }
-    setListaDeMensagem([mensagem, ...listaDeMensagem])
+    supabaseClient
+      .from('mensagens')
+      .insert([mensagem])
+      .then(({ data }) => {
+        console.log('Criando mensagem:', data)
+        setListaDeMensagem([data[0], ...listaDeMensagem])
+      })
+    setLoad(false)
 
     setMensagem('')
   }
@@ -46,6 +73,7 @@ export default function ChatPage() {
           boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
           borderRadius: '15px',
           backgroundColor: appConfig.theme.colors.neutrals[400],
+          backgroundColor: appConfig.theme.colors.transparenteArea.fundoArea,
           height: '100%',
           maxWidth: '95%',
           maxHeight: '95vh',
@@ -59,7 +87,9 @@ export default function ChatPage() {
             display: 'flex',
             flex: 1,
             height: '80%',
-            backgroundColor: appConfig.theme.colors.neutrals[500],
+            maxWidth: '100%',
+            // backgroundColor: appConfig.theme.colors.neutrals[500],
+            backgroundColor: appConfig.theme.colors.transparenteArea.fundoArea,
             flexDirection: 'column',
             borderRadius: '5px',
             padding: '16px'
@@ -101,25 +131,36 @@ export default function ChatPage() {
                 resize: 'none',
                 borderRadius: '5px',
                 padding: '6px 8px',
-                backgroundColor: appConfig.theme.colors.neutrals[800],
+                // backgroundColor: appConfig.theme.colors.neutrals[800],
                 marginRight: '12px',
-                color: appConfig.theme.colors.neutrals[200]
+                color: appConfig.theme.colors.neutrals[200],
+                backgroundColor: appConfig.theme.colors.transparente.fundo
               }}
             />
-            <Button
-              type="button"
-              label="Enviar"
-              onClick={handleSubmit}
-              styleSheet={{
-                marginBottom: '10px'
-              }}
-              buttonColors={{
-                contrastColor: appConfig.theme.colors.neutrals['000'],
-                mainColor: appConfig.theme.colors.primary[500],
-                mainColorLight: appConfig.theme.colors.primary[400],
-                mainColorStrong: appConfig.theme.colors.primary[600]
-              }}
-            />
+
+            {load ? (
+              <ReactLoading
+                type="bubbles"
+                color={appConfig.theme.colors.primary[400]}
+                height={50}
+                width={50}
+              />
+            ) : (
+              <Button
+                type="button"
+                label="Enviar"
+                onClick={handleSubmit}
+                styleSheet={{
+                  marginBottom: '10px'
+                }}
+                buttonColors={{
+                  contrastColor: appConfig.theme.colors.neutrals['000'],
+                  mainColor: appConfig.theme.colors.primary[500],
+                  mainColorLight: appConfig.theme.colors.primary[400],
+                  mainColorStrong: appConfig.theme.colors.primary[600]
+                }}
+              />
+            )}
           </Box>
         </Box>
       </Box>
@@ -157,16 +198,16 @@ function Header() {
 }
 
 function MessageList(props) {
-  console.log(props.listaDeMensagem)
+  console.log(props)
   return (
     <Box
       tag="ul"
       styleSheet={{
-        // overflow: 'scroll',
+        overflowY: 'scroll',
         display: 'flex',
         flexDirection: 'column-reverse',
         flex: 1,
-        color: appConfig.theme.colors.neutrals['000'],
+        color: appConfig.theme.colors.neutrals['200'],
         marginBottom: '16px'
       }}
     >
@@ -200,7 +241,7 @@ function MessageList(props) {
                   display: 'inline-block',
                   marginRight: '8px'
                 }}
-                src={`https://github.com/alissancamargo.png`}
+                src={`https://github.com/${mensagem.de}.png`}
               />
               <Text tag="strong">{mensagem.de}</Text>
               <Text

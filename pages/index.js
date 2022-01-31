@@ -78,7 +78,8 @@ export default function PaginaInicial() {
             padding: '32px',
             margin: '16px',
             boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
-            backgroundColor: appConfig.theme.colors.neutrals[400]
+            backgroundColor: appConfig.theme.colors.neutrals[400],
+            backgroundColor: appConfig.theme.colors.transparente.fundo
           }}
         >
           {/* Formulário */}
@@ -104,7 +105,7 @@ export default function PaginaInicial() {
               marginBottom: '10px'
             }}
           >
-            <Titulo tag="h2">Boas vindas de volta!</Titulo>
+            <Titulo tag="h2">Bem Vindos!</Titulo>
             <Text
               variant="body3"
               styleSheet={{
@@ -127,9 +128,10 @@ export default function PaginaInicial() {
               textFieldColors={{
                 neutral: {
                   textColor: appConfig.theme.colors.neutrals[200],
-                  mainColor: appConfig.theme.colors.neutrals[600],
-                  mainColorHighlight: appConfig.theme.colors.primary[600],
-                  backgroundColor: appConfig.theme.colors.neutrals[500]
+                  mainColor: appConfig.theme.colors.neutrals[400],
+                  mainColorHighlight: appConfig.theme.colors.primary[400],
+                  // backgroundColor: appConfig.theme.colors.neutrals[500],
+                  backgroundColor: appConfig.theme.colors.transparente.fundo
                 }
               }}
             />
@@ -160,7 +162,8 @@ export default function PaginaInicial() {
               borderColor: appConfig.theme.colors.neutrals[400],
               borderRadius: '15px',
               flex: 1,
-              minHeight: '240px'
+              minHeight: '240px',
+              backgroundColor: appConfig.theme.colors.transparenteArea.fundoArea
             }}
           >
             {username.length > 2 && (
@@ -180,10 +183,10 @@ export default function PaginaInicial() {
               <Text
                 variant="body4"
                 styleSheet={{
-                  color: appConfig.theme.colors.neutrals[200],
-                  backgroundColor: appConfig.theme.colors.neutrals[900],
+                  color: appConfig.theme.colors.neutrals['000'],
+                  backgroundColor: appConfig.theme.colors.primary[500],
                   padding: '3px 10px',
-                  borderRadius: '1000px'
+                  borderRadius: '5px'
                 }}
               >
                 {username}
@@ -199,7 +202,9 @@ export default function PaginaInicial() {
                   padding: '10px',
                   borderRadius: '10px',
                   marginTop: '10px',
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  backgroundColor:
+                    appConfig.theme.colors.transparenteArea.fundoArea
                 }}
               >
                 {userbio}
