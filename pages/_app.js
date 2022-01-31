@@ -5,7 +5,7 @@ function GlobalStyle() {
         // background: black;
         margin: 0;
         padding: 0;
-        box-sizzing: border-box;
+        box-sizing: border-box;
         list-style: none;
       }
 

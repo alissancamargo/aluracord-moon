@@ -1,5 +1,5 @@
 import { Box, Button, Text, TextField, Image } from '@skynexui/components'
-import React from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import appConfig from './config.json'
 
@@ -33,11 +33,18 @@ export function Titulo(props) {
 // export default HomePage
 
 export default function PaginaInicial() {
-  const [username, setUsername] = React.useState('alissancamargo')
+  const [username, setUsername] = useState('alissancamargo')
+  const [userbio, setUserbio] = useState('alissancamargo')
   const roteamento = useRouter()
 
   // const imageDefault =
   //   'https://www.fiscalti.com.br/wp-content/uploads/2021/02/default-user-image.png'
+
+  useEffect(() => {
+    fetch(`https://api.github.com/users/${username}`)
+      .then(response => response.json())
+      .then(data => setUserbio(data.bio))
+  }, [username])
 
   return (
     <>
@@ -115,6 +122,7 @@ export default function PaginaInicial() {
                 const valor = event.target.value
                 setUsername(valor)
               }}
+              // styleSheet={{ width: '100%', paddingRight: 0, marginRight: 0 }}
               fullWidth
               textFieldColors={{
                 neutral: {
@@ -155,29 +163,48 @@ export default function PaginaInicial() {
               minHeight: '240px'
             }}
           >
-            <Image
-              styleSheet={{
-                borderRadius: '50%',
-                marginBottom: '16px'
-              }}
-              src={
-                // username !== ''
-                // ?
-                `https://github.com/${username}.png`
-                // : imageDefault
-              }
-            />
-            <Text
-              variant="body4"
-              styleSheet={{
-                color: appConfig.theme.colors.neutrals[200],
-                backgroundColor: appConfig.theme.colors.neutrals[900],
-                padding: '3px 10px',
-                borderRadius: '1000px'
-              }}
-            >
-              {username}
-            </Text>
+            {username.length > 2 && (
+              <Image
+                styleSheet={{
+                  borderRadius: '50%',
+                  marginBottom: '16px'
+                }}
+                src={
+                  `https://github.com/${username}.png`
+                  // : imageDefault
+                }
+              />
+            )}
+
+            {username?.length > 2 && (
+              <Text
+                variant="body4"
+                styleSheet={{
+                  color: appConfig.theme.colors.neutrals[200],
+                  backgroundColor: appConfig.theme.colors.neutrals[900],
+                  padding: '3px 10px',
+                  borderRadius: '1000px'
+                }}
+              >
+                {username}
+              </Text>
+            )}
+
+            {userbio?.length > 2 && (
+              <Text
+                variant="body4"
+                styleSheet={{
+                  color: appConfig.theme.colors.neutrals[200],
+                  backgroundColor: appConfig.theme.colors.neutrals[900],
+                  padding: '10px',
+                  borderRadius: '10px',
+                  marginTop: '10px',
+                  textAlign: 'center'
+                }}
+              >
+                {userbio}
+              </Text>
+            )}
           </Box>
           {/* Photo Area */}
         </Box>
