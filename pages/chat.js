@@ -38,8 +38,8 @@ export default function ChatPage() {
       .then(({ data }) => {
         console.log('Criando mensagem:', data)
         setListaDeMensagem([data[0], ...listaDeMensagem])
+        setLoad(false)
       })
-    setLoad(false)
 
     setMensagem('')
   }
