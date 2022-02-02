@@ -165,7 +165,7 @@ export default function ChatPage() {
                 border: '0',
                 resize: 'none',
                 borderRadius: '5px',
-                padding: '6px 8px',
+                padding: '16px 8px 0px',
                 position: 'relative',
                 // backgroundColor: appConfig.theme.colors.neutrals[800],
                 marginRight: '12px',
