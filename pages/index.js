@@ -33,8 +33,8 @@ export function Titulo(props) {
 // export default HomePage
 
 export default function PaginaInicial() {
-  const [username, setUsername] = useState('alissancamargo')
-  const [userbio, setUserbio] = useState('alissancamargo')
+  const [username, setUsername] = useState('')
+  const [userbio, setUserbio] = useState('')
   const roteamento = useRouter()
 
   // const imageDefault =
@@ -93,7 +93,7 @@ export default function PaginaInicial() {
               }
 
               console.log('Alguém submeteu o form')
-              roteamento.push('/chat')
+              roteamento.push(`/chat?username=${username}`)
             }}
             styleSheet={{
               display: 'flex',
@@ -160,22 +160,31 @@ export default function PaginaInicial() {
               backgroundColor: appConfig.theme.colors.neutrals[500],
               border: '1px solid',
               borderColor: appConfig.theme.colors.neutrals[400],
-              borderRadius: '15px',
+              borderRadius: '8px',
               flex: 1,
               minHeight: '240px',
               backgroundColor: appConfig.theme.colors.transparenteArea.fundoArea
             }}
           >
-            {username.length > 2 && (
+            {username.length > 2 ? (
               <Image
                 styleSheet={{
                   borderRadius: '50%',
                   marginBottom: '16px'
                 }}
-                src={
-                  `https://github.com/${username}.png`
-                  // : imageDefault
-                }
+                src={`https://github.com/${username}.png`}
+              />
+            ) : (
+              <div
+                style={{
+                  width: 160,
+                  height: 160,
+                  borderRadius: 80,
+                  backgroundImage:
+                    'url(https://c.tenor.com/Zd-yRb1G55wAAAAC/sailor-moon-feels.gif)',
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
+                }}
               />
             )}
 

@@ -3,16 +3,41 @@ import React, { useState, useEffect } from 'react'
 import appConfig from './config.json'
 import { createClient } from '@supabase/supabase-js'
 import ReactLoading from 'react-loading'
+import { useRouter } from 'next/router'
+import { ButtonSendSticker } from './src/ButtonSendSticker'
+import dayjs from 'dayjs'
+import { ButtonDelete } from './src/ButtonDelete'
 
 const SUPABASE_ANON_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzYzNjk5NiwiZXhwIjoxOTU5MjEyOTk2fQ.MwC-N4B3C6_fzQHPjXxnNmR9mcoN2g7MY_IjX-ZeOHo'
 const SUPABASE_URL = 'https://ubboepldsctyphkmazyy.supabase.co'
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
+function escutaMensagensEmTempoReal(adicionaMensagem) {
+  return supabaseClient
+    .from('mensagens')
+    .on('INSERT', respostaLive => {
+      adicionaMensagem(respostaLive.new)
+    })
+    .subscribe()
+}
+
+async function handleDelete(id, setList) {
+  await supabaseClient.from('mensagens').delete().match({ id })
+
+  supabaseClient
+    .from('mensagens')
+    .select('*')
+    .order('id', { ascending: false })
+    .then(({ data }) => setList(data))
+}
+
 export default function ChatPage() {
+  const roteamento = useRouter()
+  const usuarioLogado = roteamento.query.username
   const [mensagem, setMensagem] = useState('')
-  const [listaDeMensagem, setListaDeMensagem] = useState([])
   const [load, setLoad] = useState(false)
+  const [listaDeMensagem, setListaDeMensagem] = useState([])
 
   useEffect(() => {
     supabaseClient
@@ -22,23 +47,30 @@ export default function ChatPage() {
       .then(({ data }) => {
         console.log('Dados da consulta', data)
         setListaDeMensagem(data)
+
+        escutaMensagensEmTempoReal(NovaMensagem => {
+          console.log('NovaMensagem', NovaMensagem)
+          // handleNovaMensagem(NovaMensagem)
+          setListaDeMensagem(valorAtualdaLista => {
+            return [NovaMensagem, ...valorAtualdaLista]
+          })
+          setLoad(false)
+        })
       })
   }, [])
 
   function handleNovaMensagem(NovaMensagem) {
     setLoad(true)
     const mensagem = {
-      // id: listaDeMensagem.length,
-      de: 'alissancamargo',
+      id: Number(new Date()),
+      de: usuarioLogado,
       texto: NovaMensagem
     }
     supabaseClient
       .from('mensagens')
       .insert([mensagem])
       .then(({ data }) => {
-        console.log('Criando mensagem:', data)
-        setListaDeMensagem([data[0], ...listaDeMensagem])
-        setLoad(false)
+        // console.log('Criando mensagem:', data)
       })
 
     setMensagem('')
@@ -95,7 +127,10 @@ export default function ChatPage() {
             padding: '16px'
           }}
         >
-          <MessageList mensagens={listaDeMensagem} />
+          <MessageList
+            mensagens={listaDeMensagem}
+            setListaDeMensagem={setListaDeMensagem}
+          />
           {/* {listaDeMensagem.map(mensagemAtual => {
             return (
               <li key={mensagemAtual.id}>
@@ -131,10 +166,17 @@ export default function ChatPage() {
                 resize: 'none',
                 borderRadius: '5px',
                 padding: '6px 8px',
+                position: 'relative',
                 // backgroundColor: appConfig.theme.colors.neutrals[800],
                 marginRight: '12px',
                 color: appConfig.theme.colors.neutrals[200],
                 backgroundColor: appConfig.theme.colors.transparente.fundo
+              }}
+            />
+            <ButtonSendSticker
+              onStickerClick={sticker => {
+                console.log('usando esse componente', sticker)
+                handleNovaMensagem(':sticker:' + sticker)
               }}
             />
 
@@ -213,50 +255,67 @@ function MessageList(props) {
     >
       {props.mensagens.map(mensagem => {
         return (
-          <Text
-            key={mensagem.id}
-            tag="li"
-            styleSheet={{
-              borderRadius: '5px',
-              padding: '6px',
-              marginBottom: '12px',
-              hover: {
-                backgroundColor: appConfig.theme.colors.neutrals[700]
-              }
-            }}
-          >
-            <Box
+          <>
+            <Text
+              key={mensagem.id}
+              tag="li"
               styleSheet={{
-                marginBottom: '8px',
-                display: 'flex',
-                alignItems: 'baseline',
-                alignSelf: 'flex-end'
+                borderRadius: '5px',
+                padding: '6px',
+                marginBottom: '12px',
+                position: 'relative',
+                hover: {
+                  backgroundColor: appConfig.theme.colors.neutrals[700]
+                }
               }}
             >
-              <Image
+              <Box
                 styleSheet={{
-                  width: '20px',
-                  height: '20px',
-                  borderRadius: '50%',
-                  display: 'inline-block',
-                  marginRight: '8px'
+                  marginBottom: '8px',
+                  display: 'flex',
+                  alignItems: 'baseline',
+                  alignSelf: 'flex-end'
                 }}
-                src={`https://github.com/${mensagem.de}.png`}
-              />
-              <Text tag="strong">{mensagem.de}</Text>
-              <Text
-                styleSheet={{
-                  fontSize: '10px',
-                  marginLeft: '8px',
-                  color: appConfig.theme.colors.neutrals[300]
-                }}
-                tag="span"
               >
-                {new Date().toLocaleDateString()}
-              </Text>
-            </Box>
-            {mensagem.texto}
-          </Text>
+                <Image
+                  styleSheet={{
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    display: 'inline-block',
+                    marginRight: '8px'
+                  }}
+                  src={`https://github.com/${mensagem.de}.png`}
+                />
+                <Text tag="strong">{mensagem.de}</Text>
+                <Text
+                  styleSheet={{
+                    fontSize: '10px',
+                    marginLeft: '8px',
+                    color: appConfig.theme.colors.neutrals[300]
+                  }}
+                  tag="span"
+                >
+                  {dayjs(mensagem.created_at).format('DD/MM/YYYY')}
+                </Text>
+              </Box>
+              {mensagem.texto.startsWith(':sticker:') ? (
+                <Image
+                  src={mensagem.texto.replace(':sticker:', '')}
+                  styleSheet={{
+                    width: '150px'
+                  }}
+                />
+              ) : (
+                mensagem.texto
+              )}
+              <ButtonDelete
+                onClick={() =>
+                  handleDelete(mensagem.id, props.setListaDeMensagem)
+                }
+              />
+            </Text>
+          </>
         )
       })}
     </Box>
