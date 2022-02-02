@@ -4,9 +4,9 @@ import appConfig from './config.json'
 import { createClient } from '@supabase/supabase-js'
 import ReactLoading from 'react-loading'
 import { useRouter } from 'next/router'
-import { ButtonSendSticker } from './src/ButtonSendSticker'
+import ButtonSendSticker from './src/ButtonSendSticker'
 import dayjs from 'dayjs'
-import { ButtonDelete } from './src/ButtonDelete'
+import ButtonDelete from './src/ButtonDelete'
 
 const SUPABASE_ANON_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzYzNjk5NiwiZXhwIjoxOTU5MjEyOTk2fQ.MwC-N4B3C6_fzQHPjXxnNmR9mcoN2g7MY_IjX-ZeOHo'

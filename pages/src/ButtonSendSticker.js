@@ -3,7 +3,7 @@ import { Box, Button, Text, Image } from '@skynexui/components'
 import appConfig from '../config.json'
 import { useState } from 'react'
 
-export function ButtonSendSticker(props) {
+export default function ButtonSendSticker(props) {
   const [isOpen, setOpenState] = useState('')
 
   return (

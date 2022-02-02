@@ -1,10 +1,7 @@
-import React, { useState } from 'react'
-import { Box, Button, Text, Image } from '@skynexui/components'
-import appConfig from '../config.json'
+import React from 'react'
+import { Button } from '@skynexui/components'
 
-export function ButtonDelete(props) {
-  // const Deletar =
-
+export default function ButtonDelete(props) {
   return (
     <div
       style={{
