@@ -158,7 +158,7 @@ export default function ChatPage() {
                   handleNovaMensagem(mensagem)
                 }
               }}
-              placeholder="Insira sua mensagem aqui..."
+              placeholder="Digite aqui..."
               type="textarea"
               styleSheet={{
                 width: '100%',
